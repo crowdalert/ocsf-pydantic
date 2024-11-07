@@ -1,6 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_serializer
 
 from .container import Container
+from ..util import jsonable_object_serializer, SERIALIZE_VARIABLE_JSON_RETURN_TYPE
+
 
 class ResponseElements(BaseModel):
     """
@@ -17,3 +19,7 @@ class ResponseElements(BaseModel):
     containers: list[Container] | None = None
     data: dict | None = None # The additional data that is associated with the api response.
     flags: list[str] | None = None
+
+    @field_serializer("data", return_type=SERIALIZE_VARIABLE_JSON_RETURN_TYPE)
+    def data_serializer(self, value: object):
+        return jsonable_object_serializer(value)

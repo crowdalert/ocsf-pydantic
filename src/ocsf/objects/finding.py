@@ -1,8 +1,9 @@
 from datetime import datetime
-from pydantic import AnyUrl, BaseModel
+from pydantic import AnyUrl, BaseModel, field_serializer
 
 from .related_event import RelatedEvent
 from .remediation import Remediation
+from ..util import jsonable_object_serializer, SERIALIZE_VARIABLE_JSON_RETURN_TYPE
 
 
 class Finding(BaseModel):
@@ -27,3 +28,7 @@ class Finding(BaseModel):
     src_url: AnyUrl | None = None # The URL pointing to the source of the finding.
     supporting_data: dict | None = None
     types: list[str] | None = None # One or more types of the reported finding.
+
+    @field_serializer("supporting_data", return_type=SERIALIZE_VARIABLE_JSON_RETURN_TYPE)
+    def supporting_data_serializer(self, value: object):
+        return jsonable_object_serializer(value)

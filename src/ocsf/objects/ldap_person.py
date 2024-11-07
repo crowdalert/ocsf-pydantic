@@ -6,7 +6,7 @@ from .location import GeoLocation
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .user import User
+    from .user import User, ManagerUser
 
 
 class LDAPPerson(BaseModel):
@@ -32,7 +32,10 @@ class LDAPPerson(BaseModel):
     leave_time: datetime | None = None
     location: GeoLocation | None = None # The geographical location associated with a user. This is
                                         # typically the user's usual work location.
-    manager: 'User | None' = None
+    manager: 'ManagerUser | None' = None
     modified_time: datetime | None = None # The timestamp when the user entry was last modified.
     office_location: str | None = None
     surname: str | None = None
+
+class LDAPManagerPerson(LDAPPerson):
+    manager: None = None # LDAPPerson manager's manager should not be populated https://schema.ocsf.io/1.2.0/objects/ldap_person?extensions=

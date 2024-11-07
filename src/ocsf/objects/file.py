@@ -1,6 +1,8 @@
 from enum import Enum
 from datetime import datetime
 
+from pydantic import field_serializer
+
 from .data_classification import DataClassification
 
 from ._entity import Entity
@@ -9,6 +11,7 @@ from .user import User
 from .product import Product
 from .digital_signature import DigitalSignature
 from .fingerprint import Fingerprint
+from ..util import jsonable_object_serializer, SERIALIZE_VARIABLE_JSON_RETURN_TYPE
 
 class FileTypeId(Enum):
     """
@@ -71,3 +74,7 @@ class File(Entity, DataClassification):
                            # the file system file ID.
     version: str | None = None # The file version. For example: `8.0.7601.17514`.
     xattributes: object | None = None
+
+    @field_serializer("xattributes", return_type=SERIALIZE_VARIABLE_JSON_RETURN_TYPE)
+    def xattributes_serializer(self, value: object):
+        return jsonable_object_serializer(value)
