@@ -1,13 +1,14 @@
 from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, computed_field
+from pydantic import BaseModel, computed_field, field_serializer
 
 from ocsf.objects.api import API
 from ocsf.objects.cloud import Cloud
 from ocsf.objects.enrichment import Enrichment
 from ocsf.objects.metadata import Metadata
 from ocsf.objects.observable import Observable
+from ocsf.util import jsonable_object_serializer, SERIALIZE_VARIABLE_JSON_RETURN_TYPE
 
 
 class SeverityID(Enum):
@@ -92,3 +93,7 @@ class BaseEvent(BaseModel):
     @property
     def type_name(self) -> str:
         return f'{self.class_name}: {self.activity_name}'
+
+    @field_serializer("unmapped", return_type=SERIALIZE_VARIABLE_JSON_RETURN_TYPE)
+    def unmapped_serializer(self, value: object):
+        return jsonable_object_serializer(value)

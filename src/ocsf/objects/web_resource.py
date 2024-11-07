@@ -1,5 +1,6 @@
-from pydantic import AnyUrl
+from pydantic import AnyUrl, field_serializer
 from ._resource import Resource
+from ..util import jsonable_object_serializer, SERIALIZE_VARIABLE_JSON_RETURN_TYPE
 
 class WebResource(Resource):
     """
@@ -17,3 +18,7 @@ class WebResource(Resource):
     name: str | None = None # The name of the web resource.
     type: str | None = None # The web resource type as defined by the event source.
     uid: str | None = None # The unique identifier of the web resource.
+
+    @field_serializer("data", return_type=SERIALIZE_VARIABLE_JSON_RETURN_TYPE)
+    def data_serializer(self, value: object):
+        return jsonable_object_serializer(value)

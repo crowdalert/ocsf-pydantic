@@ -1,6 +1,7 @@
+from enum import Enum
 from datetime import datetime
 
-from enum import Enum
+from pydantic import field_serializer
 
 from ._entity import Entity
 
@@ -8,6 +9,7 @@ from .container import Container
 from .user import User
 from .file import File
 from .session import Session
+from ..util import jsonable_object_serializer, SERIALIZE_VARIABLE_JSON_RETURN_TYPE
 
 
 class ProcessIntegrityId(Enum):
@@ -48,3 +50,7 @@ class Process(Entity, Container):
                            # process.
     xattributes: object | None = None # An unordered collection of zero or more name/value pairs that
                                       # represent a process extended attribute.
+
+    @field_serializer("xattributes", return_type=SERIALIZE_VARIABLE_JSON_RETURN_TYPE)
+    def xattributes_serializer(self, value: object):
+        return jsonable_object_serializer(value)

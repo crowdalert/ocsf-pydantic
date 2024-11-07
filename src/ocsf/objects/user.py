@@ -6,7 +6,7 @@ from .account import Account
 from .group import Group
 from ._entity import Entity
 from .organization import Organization
-from .ldap_person import LDAPPerson
+from .ldap_person import LDAPPerson, LDAPManagerPerson
 
 class UserTypeId(Enum):
     """
@@ -46,3 +46,6 @@ class User(Entity):
     type: str | None = None # The type of the user. For example, System, AWS IAM User, etc.
     uid_alt: str | None = None # The alternate user identifier. For example, the Active Directory user
                                # GUID or AWS user Principal ID.
+
+class ManagerUser(User):
+    ldap_person: LDAPManagerPerson

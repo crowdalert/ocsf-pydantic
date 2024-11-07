@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_serializer
 
 from .network_endpoint import NetworkEndpoint
 from .process import Process
@@ -10,6 +10,7 @@ from .network_connection_info import NetworkConnectionInformation
 from .api import API
 from .actor import Actor
 from .databucket import Databucket
+from ..util import jsonable_object_serializer, SERIALIZE_VARIABLE_JSON_RETURN_TYPE
 
 
 class EvidenceArtifacts(BaseModel):
@@ -46,3 +47,7 @@ class EvidenceArtifacts(BaseModel):
     # Optional:
     data: dict | None = None # Additional evidence data that is not accounted for in the specific
                              # evidence attributes.` Use only when absolutely necessary.`
+
+    @field_serializer("data", return_type=SERIALIZE_VARIABLE_JSON_RETURN_TYPE)
+    def data_serializer(self, value: object):
+        return jsonable_object_serializer(value)
